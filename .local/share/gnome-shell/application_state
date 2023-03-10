@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<application-state>
+  <context id="">
+    <application id="gnome-system-monitor.desktop" score="0" last-seen="1678424521"/>
+    <application id="gnome-control-center.desktop" score="32" last-seen="1678423541"/>
+    <application id="gnome-initial-setup.desktop" score="0" last-seen="1678091794"/>
+    <application id="org.gnome.Terminal.desktop" score="2055" last-seen="1678424516"/>
+    <application id="apport-gtk.desktop" score="394" last-seen="1678327062"/>
+  </context>
+</application-state>
