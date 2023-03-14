@@ -2,4 +2,4 @@
 
 cd /work
 tar cvzf allnew.tar.gz /work/allnew 
-mv allnew.tar.gz ~w
+mv allnew.tar.gz ~
