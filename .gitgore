@@ -1,0 +1,11 @@
+# .gititgnore
+
+## c programing
+c/**/a.out
+c/**/hello
+c/**/*.o
+c/**/test
+
+## java
+
+java/*.class
