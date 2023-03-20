@@ -1,6 +1,6 @@
-# .gititgnore
+# .gitignore
 
-## c programing
+## c progeraming
 c/**/a.out
 c/**/hello
 c/**/*.o
