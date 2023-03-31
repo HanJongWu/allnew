@@ -21,3 +21,6 @@ maven/target
 
 ## nodejs
 node/**/node_modules
+
+## python
+python/**/.venv
