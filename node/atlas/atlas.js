@@ -4,7 +4,9 @@ var data = JSON.stringify({
     "database": "test",
     "dataSource": "Cluster0",
     "projection": {
-        "_id": 1
+        "_id": 0,
+        "id": 1,
+        "name": 1
     }
 });
             
