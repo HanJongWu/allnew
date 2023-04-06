@@ -31,3 +31,4 @@ python/**/__pycache__/
 mongodb/*.json
 mongodb/**/*.json
 mongodb/**/*.mp4
+mongodb/backup
