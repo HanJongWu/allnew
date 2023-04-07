@@ -1,0 +1,8 @@
+# atlas api-key
+ATLAS_API=TOVWSql81R6ZzllArmjsVXC2G7CPeIXg00pI6nt7mAdWc7xppl216uPU0Lw7PdHt
+
+# mysql authentication info
+host=192.168.1.81
+user=mysql
+password=1234
+database=testdb

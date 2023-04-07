@@ -2,6 +2,9 @@
 
 .ftpconfig
 
+# environment files
+.env
+
 ## c programing
 c/**/a.out
 c/**/hello
