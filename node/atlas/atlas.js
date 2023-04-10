@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const env = require('dotenv').config({ path: "../../.env"})
+const env = require('dotenv').config({ path: "../../.env" });
 
 var data = JSON.stringify({
     "collection": "testdb",
@@ -8,17 +8,18 @@ var data = JSON.stringify({
     "dataSource": "Cluster0",
     "projection": {
         "_id": 0,
-        "name" : 1
+        "id": 1,
+        "name": 1
     }
 });
-            
+     
 var config = {
     method: 'post',
-    url: 'https://us-west-2.aws.data.mongodb-api.com/app/data-nymnn/endpoint/data/v1/action/findOne',
+    url: 'https://us-west-2.aws.data.mongodb-api.com/app/data-lvmne/endpoint/data/v1/action/findOne',
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Request-Headers': '*',
-      'api-key': process.env.ATLAS_API,
+      'api-key': process.env.ATLAS_API
     },
     data: data
 };
