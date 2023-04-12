@@ -1,0 +1,62 @@
+body {
+  background-color: rgb(247, 225, 240);
+  font: bold 19px monospace, sans-serif;
+  text-align: center;
+}
+x h3 {
+  color: rgb(115, 209, 243);
+  margin: 50px;
+}
+hr {
+  border: 5px solid rgb(221, 204, 169);
+}
+input {
+  color: rgb(0, 0, 0);
+}
+button {
+  color: rgb(164, 182, 137);
+}
+a {
+  font-family: monospace;
+  font-size: 18px;
+  color: rgb(255, 54, 164);
+}
+input[type="text"] {
+  background-color: rgb(186, 229, 246);
+}
+
+input[type="password"] {
+  background-color: rgb(208, 234, 168);
+}
+#round {
+  border-image: url("media/border.png") 30 round;
+}
+#repeat {
+  border-image: url("media/border.png") 30 repeat;
+}
+#stretch {
+  border-image: url("media/border.png") 30 stretch;
+}
+div.box {
+  background: rgb(231, 213, 227);
+  border-style: solid;
+  border-color: peru;
+  border-radius: 35px;
+  border-image: ;
+  width: 350px;
+  height: 180px;
+
+  margin: 100px;
+  border-width: 1px;
+  padding: 50px;
+}
+div.box-inner {
+  border-style: none;
+  text-align: center;
+  border-color: peru;
+
+  margin: 100px;
+  border-width: 1px;
+  margin: 10px;
+  padding: 10px;
+}

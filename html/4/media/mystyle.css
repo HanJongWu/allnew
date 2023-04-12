@@ -1,0 +1,28 @@
+body {
+  background-color: rgb(255, 177, 255);
+}
+h3 {
+  color: rgb(231, 44, 44);
+}
+hr {
+  border: 5px solid rgb(0, 0, 0);
+}
+input {
+  color: rgb(255, 255, 255);
+  font-size: 20px;
+}
+button {
+  color: rgb(96, 96, 161);
+  font-size: 20px;
+}
+a {
+  font-family: monospace;
+  color: rgb(230, 230, 240);
+  font-size: 20px;
+}
+input[type="text"] {
+  background-color: lightblue;
+}
+input[type="password"] {
+  background-color: lightblue;
+}
