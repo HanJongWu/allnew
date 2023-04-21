@@ -2,13 +2,19 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>이벤트 리스너 속성에 자바스크립트 코드</title>
+<title>숫자 추출</title>
 </head>
 <body>
-<h3>마우스 올려 보세요</h3>
-<hr>
-<img src="media/apple.png" alt="이미지" 
-		onmouseover="this.src='media/banana.png'"
-		onmouseout="this.src='media/apple.png'">
+<h3>숫자 추출</h3>
+<hr />
+<script>
+		let n = prompt("Random 숫자 최대값을 입력하세요.", 3);
+		n = parseInt(n);
+		let x = Math.floor(Math.random() * 3 + 1 );
+		if(n > x) {
+		document.write("승리")};
+		if(x > n) {
+		document.write("패배")};
+</script>
 </body>
 </html>

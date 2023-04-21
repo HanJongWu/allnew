@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>test</title>
+<script>
+	let book = {
+		title : "집에가는법",
+        author : "한종우",
+        totalPage : "200",
+        catrgory : "autobiography",
+        price : "5000",
+
+        reading : function (page) {
+            this.totalPage -= page;
+            return this.totalPage;
+        }
+        rental : function (user, day) {
+            this.rentalUser = user;
+            this.rentalDay = day;
+            this.rentalState = 0;
+            return this.rentalState;
+        },
+    };
+</script>
+</head>
+<body>
+<h3>test</h3>
+<hr>
+<script>
+	document.write("Book : " + "<br>");
+	document.write("제목" + book.title + "<br>");
+</script>
+</body>
+</html>

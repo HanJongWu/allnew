@@ -7,11 +7,11 @@
 <h3>텍스트가 자동 회전하며, 마우스로 클릭하면 중단합니다.</h3>
 <hr>
 <div><span id="span" style="background-color:yellow">
-		자동 회전하는 텍스트입니다.</span>
+		자동 회전하는 텍스트입니다.자동 회전하는 텍스트입니다.자동 회전하는 텍스트입니다.자동 회전하는 텍스트입니다.</span>
 </div>
 <script>
 let span = document.getElementById("span");
-let timerID = setInterval("doRotate()", 200); // 200밀리초 주기로 doRotate() 호출
+let timerID = setInterval("doRotate()", 10); // 200밀리초 주기로 doRotate() 호출
 
 span.onclick = function (e) { // 마우스 클릭 이벤트 리스너
 	clearInterval(timerID); // 타이머 해제. 문자열 회전 중단

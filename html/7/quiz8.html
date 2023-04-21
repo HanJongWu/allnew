@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+</head>
+<script>
+    function Student(name, score) {
+        this.name = name;
+        this.score = score; 
+
+        this.pass = function () {
+            if(this.score >= 90) return " pass "
+            else (this.score < 90) return " fail ";
+        }
+    }
+</script>
+<body>
+<script>
+    let Java = new Student("java", 70);
+    let Pathon = new Student("pathon", 80);
+    let Cman = new Student("c++", 90);
+</script>
+</body>
+</html>
