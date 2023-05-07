@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>환영합니다!</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+    <nav id="admin">
+        <ul>
+            <li><a href="admin.html">Home</a></li>
+            <li><a href="adminbike.html">Bicycle</a></li>
+            <li><a href="admintr.html">Trade</a></li>
+            <li style="float:right;"><a onclick="sessionlogout()" href="index.html">logout</a></li>
+        </ul>
+        <hr />
+    </nav>
+    <div id="user-info">
+        <h1>자전거 정보</h1>
+        <iframe name="userURL" width="100%" height="500" style="border: none" src="/selectbic"></iframe>
+
+    </div>
+    <div id="user-form">
+        <form action="/insert" target="tarURL" name="userForm" method="post">
+            <p>Userid : <input type="text" size="15" name="id" /></p>
+            <p>Name : <input type="text" size="15" name="pw" /></p>
+            <p>Email : <input type="text" size="15" name="em" /></p>
+            <p>Mobile : <input type="text" size="15" name="mo" /></p>
+            <input type="button" value="get select" onclick='document.targetURL.location.href="/selectbic"' />
+            <input type="button" value="get selectQuery"
+                onclick='document.targetURL.location.href="/bselectQuery?id="+document.userForm.id.value' />&nbsp;&nbsp;
+        </form>
+    </div>
+    <div id="target-frame">
+        <iframe name="targetURL" width="100%" height="500" style="border: none" src="/selectbic"></iframe>
+    </div>
+</body>
+
+</html>

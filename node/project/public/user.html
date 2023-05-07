@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<link href="style.css" type="text/css" rel="stylesheet">
+<head>
+    <meta charset="utf-8" />
+    <title>userpage</title>
+    <script>
+        let id = "";
+        let now = "";
+        function getParameter(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null
+                ? ""
+                : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+        function sessionStore() {
+            id = getParameter("id");
+            now = new Date();
+            if (!window.sessionStorage) {
+                alert("세션 스토리지를 지원하지 않습니다.");
+                return;
+            }
+            sessionStorage.setItem(id, now);
+            alert(`사용자 - ${id}님이 로그인 하셨습니다.`);
+        }
+
+        window.addEventListener("beforeunload", (event) => {
+            event.preventDefault();
+            event.returnValue = "";
+        });
+
+        function logout() {
+            sessionStorage.removeItem(id);
+        }
+
+        function gohome() {
+            location.href = `uesr.html?id=$id=${id}`;
+        }
+
+    </script>
+<body onload="sessionStore()">
+    <nav id="admin">
+        <ul>
+            <li><a href="user.html">Home</a></li>
+            <li><a href="trade.html" target="lower">Trade</a></li>
+            <li style="position: fixed; right: 10px"><a href="index.html">logout</a>
+        </ul>
+    </nav>
+    <h3></h3>
+    <form id="user-form" action="/rental" method="post">
+        <p><label for="bicid">UserID :</label><input type="text" name="userid"></p>
+        <p><label for="bicid">BicID :</label><input type="text" name="bicid">
+        </p><p><label for="bicid">Starloc :</label><input type="text" name="startloc">
+        </p><input type="submit" value="Rental">
+    </form>
+    <div id = "target-frame">
+    <iframe  name="userURL" width="100%" height="500" style="border: none" src="/yesQuery"></iframe>
+    </body>
+</body>
+</html>
+</head>
+</html>
+

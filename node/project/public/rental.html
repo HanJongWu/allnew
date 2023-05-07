@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Rental</title>
+    <link type="text/css" rel="stylesheet" href="style.css" />
+
+</head>
+<script>
+    let hours = 0;
+        let minutes = 0;
+        let seconds = 0;
+
+        function updateTime() {
+            seconds++;
+            if (seconds >= 60) {
+                seconds = 0;
+                minutes++;
+                if (minutes >= 60) {
+                    minutes = 0;
+                    hours++;
+                }
+            }
+            document.querySelector(".hours").textContent = hours.toString().padStart(2, "0");
+            document.querySelector(".minutes").textContent = minutes.toString().padStart(2, "0");
+            document.querySelector(".seconds").textContent = seconds.toString().padStart(2, "0");
+        }
+
+        setInterval(updateTime, 1000);
+</script>
+<body>
+    <h3>Rental</h3>
+    <hr />
+    <!-- <img src="bic.gif" alt="자전거"> -->
+    <div class="bike-container">
+    <img src="bic2.png" width="500" height="350" alt="자전거">
+    </div>
+    <br>
+    <div id = "user-info" >
+        <h4>지금 이 만큼 달렸어요~</h4>
+        <script>
+            setInterval(function () {
+            // This function will run every 1 minute
+            console.log("1 minute has passed!");
+        }, 60000);
+        </script>
+    </div>
+    <style>
+        .bike-container {
+        background-color: #ffffff;
+        display: block;
+        position: relative;
+        
+        }
+        @keyframes slide {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(300%);
+            }
+        }
+
+        img {
+            top: 0;
+            left: 0;
+            animation: slide 3.5s infinite linear;
+            
+        }
+    </style>
+    <div    id = "user-form" class="timer">
+        <span class="hours">00</span>:<span class="minutes">00</span>:<span class="seconds">00</span><br />
+    </div>
+    <form id="user-form" action="/return" method="post">
+        <p><label for="bicid">UserID :</label><input type="text" name="userid"></p>
+        <p><label for="bicid">BicID :</label><input type="text" name="bicid"></p>
+        <p><label for="bicid">Endloc :</label><input type="text" name="endloc">
+        </p><input type="submit" value="return">
+    </form>
+</body>
+
+</html>

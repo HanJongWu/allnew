@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>환영합니다!</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+    <nav id="admin">
+        <ul>
+            <li><a href="admin.html">Home</a></li>
+            <li><a href="adminbike.html">Bicycle</a></li>
+            <li><a href="admintr.html">Trade</a></li>
+            <li style="float:right;"><a onclick="sessionlogout()" href="index.html">logout</a></li>
+        </ul>
+        <hr />
+    </nav>
+    <div id="user-info">
+        <h1>거래 명세서</h1>
+        <iframe name="userURL" width="100%" height="500" style="border: none" src="/selecttr"></iframe>
+
+    </div>
+    <div id="user-form">
+        <form action="/trade" target="tarURL" name="userForm" method="post">
+            <p>사용 금액 입력 : <input type="text" size="15" name="inprice" /></p>
+            <p>UserID: <input type="text" size="15" name="userid" /></p>
+            </p><input type="submit" value="trade">
+        </form>
+    </div>
+</body>
+
+</html>

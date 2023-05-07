@@ -91,36 +91,18 @@ app.post('/login', (req, res) => {
 
 })
 
-// register
 app.post('/register', (req, res) => {
-    const { id, pw } = req.body;
+    const { id, name, email, mobile } = req.body;
     if (id == "") {
-        res.redirect('register.html')
+        res.send("아이디를 입력하세요.")
     } else {
-        let result = connection.query("select * from user where userid=?", [id]);
-        if (result.length > 0) {
-            res.writeHead(200);
-            var template = `
-        <!doctype html>
-        <html>
-        <head>
-            <title>Error</title>
-            <meta charset="utf-8">
-        </head>
-        <body>
-            <div>
-                <h3 style="margin-left: 30px">Registrer Failed</h3>
-                <h4 style="margin-left: 30px">이미 존재하는 아이디입니다.</h4>
-                <a href="register.html" style="margin-left: 30px">다시 시도하기</a>
-            </div>
-        </body>
-        </html>
-        `;
-            res.end(template);
+        let queryResult = connection.query("select * from UserTbl where User_ID =?", [id]);
+        if (queryResult.length > 0) {
+            res.send("Duplicate ID");
         } else {
-            result = connection.query("insert into user values (?, ?)", [id, pw]);
-            console.log(result);
-            res.redirect('/');
+            let insertResult = connection.query("insert into UserTbl values(?, ?, ?, ?)", [id, name, email, mobile]);
+            console.log(insertResult);
+            res.send("회원가입이 완료 되었습니다.");
         }
     }
 })
