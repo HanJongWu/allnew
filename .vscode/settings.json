@@ -1,4 +1,8 @@
 {
   "open-in-browser.default": "chrome",
-  "livePreview.defaultPreviewPath": "/html/13/prime.html"
+  "livePreview.defaultPreviewPath": "/html/13/prime.html",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8"
+  },
+  "python.formatting.provider": "none"
 }
