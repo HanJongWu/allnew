@@ -39,17 +39,7 @@ async def healthCheck():
     return "OK"
 
 
-@app.get('/mongo_col2')
-async def getMongo():
-    return list(mycol2.find())
-
-
-@app.get('/getmongo')
-async def getMongo():
-    return list(mycol2.find().limit(20))
-
-
-@app.get('/getdata')
+@app.get('/getjsonserver')
 async def getdata():
     url = "http://localhost:5000/data"
 
@@ -61,6 +51,16 @@ async def getdata():
         return data
     else:
         return {"error": "데이터를 가져오는데 실패했습니다."}
+
+
+@app.get('/getmongoselect20')
+async def getMongo():
+    return list(mycol2.find().limit(20))
+
+
+@app.get('/mongodbALL')
+async def getMongo():
+    return list(mycol2.find())
 
 
 @app.get('/chinaquarterDF')
