@@ -33,6 +33,7 @@ try:
         sql += " )"
         mycursor.execute(sql)
 
+# commit 필수
     conn.commit()
 
 except Exception as err:

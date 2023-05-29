@@ -31,11 +31,11 @@ def getRequestUrl(url):
 
 
 def getHospitalData(pageNo, numOfRows):
-    end_point = 'http://apis.data.go.kr/6260000/MedicInstitService/MedicalInstitInfo'
+    end_point = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc'
 
     parameters = ''
     parameters += "?resultType=json"
-    parameters += "&serviceKey=" + get_secret("busan_h_apiKey")
+    parameters += "&serviceKey=" + get_secret("data_apiKey")
     parameters += "&pageNo=" + str(pageNo)
     parameters += "&numOfRows=" + str(numOfRows)
     url = end_point + parameters

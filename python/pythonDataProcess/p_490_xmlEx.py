@@ -1,4 +1,5 @@
 from xml.etree.ElementTree import parse
+
 tree = parse('xmlEx_03.xml')
 myroot = tree.getroot()
 print(type(myroot))
