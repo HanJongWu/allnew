@@ -2,11 +2,12 @@ import pandas as pd
 import csv
 import os
 import json
+from pymongo import MongoClient
 
 # excel file csv 변환
-excel_file = 'FabCapacityData.xlsx'
+excel_file = '(업로드)c3_주요제조품 생산량(월별)_2304.xlsx'
 
-csv_file = 'FabCapacityData.csv'
+csv_file = 'result.csv'
 
 data = pd.read_excel(excel_file)
 
@@ -29,8 +30,8 @@ os.rename(temp_filename, csv_file)
 print('CSV 파일로 변환 완료:', csv_file)
 
 # csv 파일 행,열 변환
-origin_csv = 'FabCapacityData.csv'
-output_csv = 'test123.csv'
+origin_csv = 'result.csv'
+output_csv = 'temp.csv'
 
 df = pd.read_csv(origin_csv, encoding='utf-8', index_col='구분')
 df_transposed = df.T
@@ -57,61 +58,24 @@ def csv_to_json(csv_file, json_file):
         json.dump(temp, json_file, ensure_ascii=False)
 
 
-csv_file = 'test123.csv'
-json_file = 'result.json'
+csv_file = 'temp.csv'
+json_file = 'chinaData.json'
 
 csv_to_json(csv_file, json_file)
 
-# def csv_to_json(csv_file, json_file):
-#     with open(csv_file, 'r', newline='', encoding='utf-8') as csv_file, \
-#             open(json_file, 'w', newline='', encoding='utf-8') as json_file:
-#         reader = csv.reader(csv_file)
-#         col_names = next(reader)
-#         data = []
-#         for row in reader:
-#             row_data = {}
-#             for i, col in enumerate(row):
-#                 row_data[col_names[i]] = col
-#             data.append(row_data)
-#         json.dump(data, json_file, ensure_ascii=False)
+# MongoDB import
 
+client = MongoClient('mongodb://192.168.1.25:27017')
+db = client['project']
+collection = db['chinaData']
 
-# csv_file = 'test123.csv'
-# json_file = 'result.json'
+json_file = 'chinaData.json'
 
-# csv_to_json(csv_file, json_file)
+with open(json_file, 'r', encoding='utf-8') as file:
+    data = json.load(file)
+    file = data['data']
+    if isinstance(file, dict):
+        file = [file]
+    collection.insert_many(file)
 
-# def csv_to_json(csv_file, json_file):
-#     with open(csv_file, 'r', newline='', encoding='utf-8') as csv_file, \
-#             open(json_file, 'w', newline='', encoding='utf-8') as json_file:
-#         reader = csv.reader(csv_file)
-#         col_names = next(reader)
-#         data = {}
-#         for cols in reader:
-#             for i, col in enumerate(cols):
-#                 if col_names[i] not in data:
-#                     data[col_names[i]] = col
-#         json.dump(data, json_file, ensure_ascii=False)
-
-
-# csv_file = 'test123.csv'
-# json_file = 'result.json'
-
-# csv_to_json(csv_file, json_file)
-
-# def csv_to_json(csv_file, json_file):
-#     with open(csv_file, 'r', newline='', encoding='utf-8') as csv_file, \
-#             open(json_file, 'w', newline='', encoding='utf-8') as json_file:
-#         reader = csv.reader(csv_file)
-#         col_names = next(reader)
-#         docs = []
-#         for cols in reader:
-#             doc = {col_name: col for col_name, col in zip(col_names, cols)}
-#             docs.append(doc)
-#         json.dump(docs, json_file, ensure_ascii=False)
-
-
-# csv_file = 'test123.csv'
-# json_file = 'result.json'
-
-# csv_to_json(csv_file, json_file)
+print('MongoDB import..')

@@ -24,16 +24,19 @@ mycol1 = mydb['AllParticleDatas']
 mycol2 = mydb['chinaData']
 
 
+def save_quarters_data(year, quarters_data):
+    # 연도별로 하위 디렉토리를 생성합니다.
+    os.makedirs(str(year), exist_ok=True)
+
+    # 각 분기별 JSON 데이터를 연도별 디렉토리에 저장합니다.
+    for quarter, data in quarters_data.items():
+        with open(os.path.join(str(year), f"{year}_{quarter}_data.json"), "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
+
 @app.get('/')
 async def healthCheck():
     return "OK"
-
-# /getmongo: MongoDB의 mycol 컬렉션에서 최대 20개의 문서를 가져오는 엔드포인트
-
-
-# @app.get('/mongo_col1')
-# async def getMongo():
-#     return list(mycol1.find())
 
 
 @app.get('/mongo_col2')
@@ -44,8 +47,6 @@ async def getMongo():
 @app.get('/getmongo')
 async def getMongo():
     return list(mycol2.find().limit(20))
-
-# Json Server에서 데이터 가지고 오기
 
 
 @app.get('/getdata')
@@ -80,17 +81,27 @@ async def chinaquarter():
 
     df = pd.DataFrame(filtered_data)
 
-    quarter1_df = df[df['구분'].str.contains('\d{4}년 *0?[1-3]월')]
-    quarter2_df = df[df['구분'].str.contains('\d{4}년 *0?[4-6]월')]
-    quarter3_df = df[df['구분'].str.contains('\d{4}년 *0?[7-9]월')]
-    quarter4_df = df[df['구분'].str.contains('\d{4}년 *1[0-2]월')]
+    # 모든 연도를 추출하고 중복을 제거합니다.
+    years = set(df['구분'].str.extract('(\d{4})년')[0].astype(int))
 
-    quarter1_json = quarter1_df.to_json(orient='records')
-    quarter2_json = quarter2_df.to_json(orient='records')
-    quarter3_json = quarter3_df.to_json(orient='records')
-    quarter4_json = quarter4_df.to_json(orient='records')
+    for year in years:
+        # 각 연도에 대해 월별 데이터를 분기별로 나눕니다.
+        year_str = f"{year}년"
+        year_df = df[df['구분'].str.startswith(year_str)]
 
-    return {"Q1": json.loads(quarter1_json),
-            "Q2": json.loads(quarter2_json),
-            "Q3": json.loads(quarter3_json),
-            "Q4": json.loads(quarter4_json)}
+        quarter1_df = year_df[year_df['구분'].str.contains('\d{4}년 *0?[1-3]월')]
+        quarter2_df = year_df[year_df['구분'].str.contains('\d{4}년 *0?[4-6]월')]
+        quarter3_df = year_df[year_df['구분'].str.contains('\d{4}년 *0?[7-9]월')]
+        quarter4_df = year_df[year_df['구분'].str.contains('\d{4}년 *1[0-2]월')]
+
+        quarters_data = {
+            "Q1": json.loads(quarter1_df.to_json(orient='records')),
+            "Q2": json.loads(quarter2_df.to_json(orient='records')),
+            "Q3": json.loads(quarter3_df.to_json(orient='records')),
+            "Q4": json.loads(quarter4_df.to_json(orient='records')),
+        }
+
+        # 연도별로 각 분기별 데이터를 저장합니다.
+        save_quarters_data(year, quarters_data)
+
+    return "분기별 데이터가 연도별로 저장되었습니다."
