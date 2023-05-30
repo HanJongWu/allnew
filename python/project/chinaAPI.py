@@ -24,19 +24,9 @@ mycol1 = mydb['AllParticleDatas']
 mycol2 = mydb['chinaData']
 
 
-def save_quarters_data(year, quarters_data):
-    # 연도별로 하위 디렉토리를 생성합니다.
-    os.makedirs(str(year), exist_ok=True)
-
-    # 각 분기별 JSON 데이터를 연도별 디렉토리에 저장합니다.
-    for quarter, data in quarters_data.items():
-        with open(os.path.join(str(year), f"{year}_{quarter}_data.json"), "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-
-
 @app.get('/')
 async def healthCheck():
-    return "OK"
+    return "정상적으로 접속 했습니다."
 
 
 @app.get('/getjsonserver')
@@ -54,17 +44,30 @@ async def getdata():
 
 
 @app.get('/getmongoselect20')
-async def getMongo():
+async def getMongoSelect():
     return list(mycol2.find().limit(20))
 
 
 @app.get('/mongodbALL')
-async def getMongo():
+async def getAllMongo():
     return list(mycol2.find())
 
 
-@app.get('/chinaquarterDF')
-async def chinaquarter():
+def save_yearly_data(year, data):
+    os.makedirs(str(year), exist_ok=True)
+    with open(os.path.join(str(year), f"{year}_year_data.json"), "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+def save_quarters_data(year, quarters_data):
+    os.makedirs(os.path.join(str(year), "quarters"), exist_ok=True)
+    for quarter, data in quarters_data.items():
+        with open(os.path.join(str(year), "quarters", f"{year}_{quarter}_data.json"), "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+@app.get('/chinaYearAndQuarterDF')
+async def chinaYearAndQuarter():
 
     data = mycol2.find(
         {"구분": {"$regex": "2018년|2019년|2020년|2021년|2022년|2023년"}})
@@ -81,13 +84,16 @@ async def chinaquarter():
 
     df = pd.DataFrame(filtered_data)
 
-    # 모든 연도를 추출하고 중복을 제거합니다.
     years = set(df['구분'].str.extract('(\d{4})년')[0].astype(int))
 
     for year in years:
-        # 각 연도에 대해 월별 데이터를 분기별로 나눕니다.
+
         year_str = f"{year}년"
         year_df = df[df['구분'].str.startswith(year_str)]
+
+        year_data = json.loads(year_df.to_json(orient='records'))
+
+        save_yearly_data(year, year_data)
 
         quarter1_df = year_df[year_df['구분'].str.contains('\d{4}년 *0?[1-3]월')]
         quarter2_df = year_df[year_df['구분'].str.contains('\d{4}년 *0?[4-6]월')]
@@ -101,7 +107,50 @@ async def chinaquarter():
             "Q4": json.loads(quarter4_df.to_json(orient='records')),
         }
 
-        # 연도별로 각 분기별 데이터를 저장합니다.
         save_quarters_data(year, quarters_data)
 
-    return "분기별 데이터가 연도별로 저장되었습니다."
+    return "연도별 및 분기별 데이터가 성공적으로 저장되었습니다."
+
+
+@app.get("/china_data/{year}/{quarter}")
+def china_data(year: int, quarter: int):
+    query = {"year": year, "quarter": quarter}
+    data = list(mycol2.find(query))
+    return {"results": data}
+
+
+# @app.get('/chinaQuarterDF')
+# async def chinaQuarterDF(year: int, quarter: int):
+#     json_file = f"{year}_Q{quarter}_data.json"
+#     json_path = os.path.join('.', str(year), json_file)
+
+#     if not os.path.exists(json_path):
+#         return 'Error: No such file.'
+
+#     with open(json_path, 'r', encoding='utf-8') as f:
+#         data = json.loads(f.read())
+
+#     df = pd.DataFrame.from_records(data, index='구분')
+
+#     return df.to_json(orient='records', force_ascii=False)
+# # @app.get('/chinaDF')
+
+
+# async def chinaQuarterDF():
+#     path = './'
+
+#     # 2018년 ~ 2023년 디렉토리 내의 모든 json 파일 경로 목록을 가져옵니다.
+#     json_paths = []
+#     for year in range(2018, 2024):
+#         for quarter in range(1, 5):
+#             json_path = os.path.join(path, str(year), f"{year}_Q{quarter}_data.json")
+#             json_paths.append(json_path)
+# async def chinaDF(year: int, quarter: int):
+#     json_file = f"{year}_Q{quarter}_data.json"
+
+#     with open(json_file, 'r', encoding='utf-8') as f:
+#         data = json.loads(f.read())
+
+#     df = pd.DataFrame.from_records(data, index='구분')
+
+#     return df.to_json(orient='records', force_ascii=False)

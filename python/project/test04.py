@@ -1,24 +1,50 @@
 import pandas as pd
 import json
 
+# json_file = 'test.json'
 
-def excel_to_json(file_path, output_path):
-    # Excel 파일을 DataFrame으로 로드합니다.
-    df = pd.read_excel(file_path)
+# with open(json_file, 'r', encoding='utf-8') as f:
+#     secrets = json.loads(f.read())
 
-    # DataFrame을 JSON으로 변환합니다.
-    json_data = df.to_json(orient='records', force_ascii=False)
+# print(type(secrets))
 
-    with open(output_path, 'w', encoding='utf-8') as f:
-        # JSON 데이터를 파일로 저장합니다.
-        json.dump(json_data, f, ensure_ascii=False)
+# # df = pd.DataFrame(list(secrets), index=None)
+# df = pd.DataFrame.from_records(secrets, index='구분')
+# print(type(df))
+# print(df)
+
+a_lsit = [1, 2, 3, 4]
+b_list = ["a", "b", "c", "d"]
+df2 = pd.DataFrame(a_lsit)
+df = pd.DataFrame(b_list)
+
+df3 = pd.concat([df2, df], axis=0)
+print(df)
+print(df2)
+print(df3)
+
+# with open(json_file, 'w', encoding='utf-8') as file:
+#     json.dump(json_file)
+
+# with open(json_file, 'r', encoding='utf-8') as f:
+#     secrets = json.loads(f.read())
 
 
-# Excel 파일 경로
-excel_file_path = '주요제조품 생산량(월별)_2304.xlsx'
-
-# JSON 파일 저장 경로
-json_output_path = 'output.json'
-
-# Excel 파일을 JSON으로 변환하고 저장
-excel_to_json(excel_file_path, json_output_path)
+# dictionary = dict.fromkeys(secrets)
+# print(dictionary)
+# date = []
+# value = []
+# unit = []
+# obs_status = []
+# decimal = []
+# for i in range(len(contents[1])):
+#     date.append(contents[1][i]["date"])
+#     value.append(contents[1][i]["value"])
+#     unit.append(contents[1][i]["unit"])
+#     obs_status.append(contents[1][i]["obs_status"])
+#     decimal.append(contents[1][i]["decimal"])
+# USA_GDP = pd.DataFrame({"date": date,
+#                        "value": value,
+#                         "unit": unit,
+#                         "obs_status": obs_status,
+#                         "decimal": decimal})
