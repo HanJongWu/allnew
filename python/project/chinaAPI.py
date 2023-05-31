@@ -6,6 +6,7 @@ from bson.objectid import ObjectId
 import os.path
 import json
 import requests
+import shutil
 
 # ENCODERS_BY_TYPE: pydantic의 JSON 인코더가 MongoDB [ObjectId]를 문자열(str)로 인코딩할 수 있도록 설정
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
@@ -22,12 +23,15 @@ mydb = client['project']
 mycol1 = mydb['AllParticleDatas']
 mycol2 = mydb['chinaData']
 
+# 접속 확인
+
 
 @app.get('/')
 async def healthCheck():
     return "정상적으로 접속 했습니다."
 
 
+# jsonserver data request
 @app.get('/getjsonserver')
 async def getjsonserver():
     url = "http://localhost:5000/data"
@@ -42,6 +46,7 @@ async def getjsonserver():
         return {"error": "데이터를 가져오는데 실패했습니다."}
 
 
+# jsonserver data request > mongodb
 @app.get('/getjsonservermongodb')
 async def getjsonservermongodb():
     url = "http://localhost:5000/data"
@@ -50,32 +55,36 @@ async def getjsonservermongodb():
     if response.status_code == 200:
         data = response.json()
 
-        if isinstance(data, dict):  # JSON에서 딕셔너리만 있는 경우 리스트로 변환합니다.
+        if isinstance(data, dict):
             data = [data]
 
-        mycol2.insert_many(data)  # 가져온 데이터를 인서트합니다.
+        mycol2.insert_many(data)
         return {"status": "mongoDB insert.."}
 
     else:
         return {"error"}
 
 
+# mongodb select 20
 @app.get('/getmongoselect20')
 async def getMongoSelect():
     return list(mycol2.find().limit(20))
 
 
+# mongdb data all
 @app.get('/mongodbALL')
 async def getAllMongo():
     return list(mycol2.find())
 
 
+# year data function
 def save_yearly_data(year, data):
     os.makedirs(str(year), exist_ok=True)
     with open(os.path.join(str(year), f"{year}_year_data.json"), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
+# quater data function
 def save_quarters_data(year, quarters_data):
     os.makedirs(os.path.join(str(year), "quarters"), exist_ok=True)
     for quarter, data in quarters_data.items():
@@ -83,6 +92,7 @@ def save_quarters_data(year, quarters_data):
             json.dump(data, f, ensure_ascii=False, indent=4)
 
 
+# china data year&quater json save
 @app.get('/chinaYearAndQuarterDF')
 async def chinaYearAndQuarter():
 
@@ -129,6 +139,9 @@ async def chinaYearAndQuarter():
     return "연도별 및 분기별 데이터가 성공적으로 저장되었습니다."
 
 
+# china data year&quater request
+
+
 @app.get("/{year}/{quarter}")
 async def get_data(
     year: int = Path(..., description="연도를 입력하세요. ex) 2018~2023"),
@@ -151,3 +164,35 @@ async def get_data(
         json.dump(data, outfile, ensure_ascii=False)
 
     return {"message": f"{year}년 {quarter}분기 데이터를 불러옵니다", "data": df.to_dict(orient="records")}
+
+
+# mongoDB drop
+
+@app.get('/dropMongoCollectionData')
+async def dropMongoCollectionData(collectionName: str = None):
+    drop_mycol = mydb[collectionName]
+    drop_mycol.drop()
+    return 'mongoDB 데이터 삭제 완료'
+
+
+# local data drop
+
+@app.get('/droplocalData')
+async def droplocalData():
+    years = [2018, 2019, 2020, 2021, 2022, 2023]
+    quarters = ["Q1", "Q2", "Q3", "Q4"]
+
+    for year in years:
+        if os.path.exists(str(year)):
+            shutil.rmtree(str(year))
+
+    for quarter in quarters:
+        files_to_remove = [file for file in os.listdir(
+        ) if file.endswith(".json") and quarter in file]
+        for file in files_to_remove:
+            os.remove(file)
+
+    if os.path.exists('chinaData.json'):
+        os.remove('chinaData.json')
+
+    return "local Data 삭제 완료"

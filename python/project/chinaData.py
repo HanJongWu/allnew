@@ -3,7 +3,10 @@ import json
 
 excel_file = '(업로드)c3_주요제조품 생산량(월별)_2304.xlsx'
 
+print(excel_file)
+
 df = pd.read_excel(excel_file, engine="openpyxl", header=2, index_col='구분')
+
 
 df = df.iloc[:, 6:].transpose().fillna(0)
 
