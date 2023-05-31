@@ -1,6 +1,5 @@
 import pandas as pd
-from pymongo import MongoClient
-from fastapi import FastAPI
+from fastapi import FastAPI, Path
 from pymongo import mongo_client
 import pydantic
 from bson.objectid import ObjectId
@@ -30,7 +29,7 @@ async def healthCheck():
 
 
 @app.get('/getjsonserver')
-async def getdata():
+async def getjsonserver():
     url = "http://localhost:5000/data"
 
     response = requests.get(url)
@@ -41,6 +40,24 @@ async def getdata():
         return data
     else:
         return {"error": "데이터를 가져오는데 실패했습니다."}
+
+
+@app.get('/getjsonservermongodb')
+async def getjsonservermongodb():
+    url = "http://localhost:5000/data"
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+
+        if isinstance(data, dict):  # JSON에서 딕셔너리만 있는 경우 리스트로 변환합니다.
+            data = [data]
+
+        mycol2.insert_many(data)  # 가져온 데이터를 인서트합니다.
+        return {"status": "mongoDB insert.."}
+
+    else:
+        return {"error"}
 
 
 @app.get('/getmongoselect20')
@@ -112,45 +129,25 @@ async def chinaYearAndQuarter():
     return "연도별 및 분기별 데이터가 성공적으로 저장되었습니다."
 
 
-@app.get("/china_data/{year}/{quarter}")
-def china_data(year: int, quarter: int):
-    query = {"year": year, "quarter": quarter}
-    data = list(mycol2.find(query))
-    return {"results": data}
+@app.get("/{year}/{quarter}")
+async def get_data(
+    year: int = Path(..., description="연도를 입력하세요. ex) 2018~2023"),
+    quarter: int = Path(..., description="분기를 입력하세요. ex) 1~4")
+):
+    if year < 2018 or year > 2023 or quarter < 1 or quarter > 4:
+        return {"error": "Invalid year or quarter"}
 
+    json_file = f"{year}/quarters/{year}_Q{quarter}_data.json"
+    if not os.path.exists(json_file):
+        return {"error": "File not found"}
 
-# @app.get('/chinaQuarterDF')
-# async def chinaQuarterDF(year: int, quarter: int):
-#     json_file = f"{year}_Q{quarter}_data.json"
-#     json_path = os.path.join('.', str(year), json_file)
+    with open(json_file, 'r', encoding='utf-8') as f:
+        data = json.loads(f.read())
 
-#     if not os.path.exists(json_path):
-#         return 'Error: No such file.'
+    df = pd.DataFrame.from_records(data)
 
-#     with open(json_path, 'r', encoding='utf-8') as f:
-#         data = json.loads(f.read())
+    result_json_file = f'{year}_Q{quarter}.json'
+    with open(result_json_file, 'w', encoding='utf-8') as outfile:
+        json.dump(data, outfile, ensure_ascii=False)
 
-#     df = pd.DataFrame.from_records(data, index='구분')
-
-#     return df.to_json(orient='records', force_ascii=False)
-# # @app.get('/chinaDF')
-
-
-# async def chinaQuarterDF():
-#     path = './'
-
-#     # 2018년 ~ 2023년 디렉토리 내의 모든 json 파일 경로 목록을 가져옵니다.
-#     json_paths = []
-#     for year in range(2018, 2024):
-#         for quarter in range(1, 5):
-#             json_path = os.path.join(path, str(year), f"{year}_Q{quarter}_data.json")
-#             json_paths.append(json_path)
-# async def chinaDF(year: int, quarter: int):
-#     json_file = f"{year}_Q{quarter}_data.json"
-
-#     with open(json_file, 'r', encoding='utf-8') as f:
-#         data = json.loads(f.read())
-
-#     df = pd.DataFrame.from_records(data, index='구분')
-
-#     return df.to_json(orient='records', force_ascii=False)
+    return {"message": f"{year}년 {quarter}분기 데이터를 불러옵니다", "data": df.to_dict(orient="records")}
