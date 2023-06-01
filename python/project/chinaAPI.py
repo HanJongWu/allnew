@@ -7,6 +7,8 @@ import os.path
 import json
 import requests
 import shutil
+from typing import Optional
+import matplotlib.pyplot as plt
 
 # ENCODERS_BY_TYPE: pydantic의 JSON 인코더가 MongoDB [ObjectId]를 문자열(str)로 인코딩할 수 있도록 설정
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
@@ -93,6 +95,7 @@ def save_quarters_data(year, quarters_data):
 
 
 # china data year&quater json save
+
 @app.get('/chinaYearAndQuarterDF')
 async def chinaYearAndQuarter():
 
@@ -123,16 +126,24 @@ async def chinaYearAndQuarter():
         save_yearly_data(year, year_data)
 
         quarter1_df = year_df[year_df['구분'].str.contains('\d{4}년 *0?[1-3]월')]
-        quarter2_df = year_df[year_df['구분'].str.contains('\d{4}년 *0?[4-6]월')]
-        quarter3_df = year_df[year_df['구분'].str.contains('\d{4}년 *0?[7-9]월')]
-        quarter4_df = year_df[year_df['구분'].str.contains('\d{4}년 *1[0-2]월')]
 
         quarters_data = {
-            "Q1": json.loads(quarter1_df.to_json(orient='records')),
-            "Q2": json.loads(quarter2_df.to_json(orient='records')),
-            "Q3": json.loads(quarter3_df.to_json(orient='records')),
-            "Q4": json.loads(quarter4_df.to_json(orient='records')),
+            "Q1": json.loads(quarter1_df.to_json(orient='records'))
         }
+
+        if year != 2023:
+            quarter2_df = year_df[year_df['구분'].str.contains(
+                '\d{4}년 *0?[4-6]월')]
+            quarter3_df = year_df[year_df['구분'].str.contains(
+                '\d{4}년 *0?[7-9]월')]
+            quarter4_df = year_df[year_df['구분'].str.contains(
+                '\d{4}년 *1[0-2]월')]
+            quarters_data["Q2"] = json.loads(
+                quarter2_df.to_json(orient='records'))
+            quarters_data["Q3"] = json.loads(
+                quarter3_df.to_json(orient='records'))
+            quarters_data["Q4"] = json.loads(
+                quarter4_df.to_json(orient='records'))
 
         save_quarters_data(year, quarters_data)
 
@@ -183,7 +194,7 @@ async def droplocalData():
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
     for year in years:
-        if os.path.exists(str(year)):
+        if os.path.exists(str(year)):  # 올바른 함수로 수정했습니다.
             shutil.rmtree(str(year))
 
     for quarter in quarters:
@@ -195,4 +206,72 @@ async def droplocalData():
     if os.path.exists('chinaData.json'):
         os.remove('chinaData.json')
 
+    # PNG 파일 삭제 부분 추가
+    png_files_to_remove = [
+        file for file in os.listdir() if file.endswith(".png")]
+    for file in png_files_to_remove:
+        os.remove(file)
+
     return "local Data 삭제 완료"
+
+
+def quarter_mean(year, quarter):
+    file_path = f"./{year}/quarters/{year}_{quarter}_data.json"
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            quarter_data = json.load(file)
+    except FileNotFoundError:
+        return None
+
+    df = pd.DataFrame(quarter_data)
+
+    mean_values = {}
+    item_list = ["방직 당월 (억 미터)"]
+
+    for item in item_list:
+        mean_values[item] = df[item].mean()
+
+    return mean_values
+
+
+@app.get('/save_visual')
+async def save_visual(item_list: str):
+    time_range = pd.date_range(start='2018-01', end='2023-03', freq='QS')
+    quarterly_mean_df = pd.DataFrame(columns=[item_list], index=time_range)
+
+    quarters = ['Q1', 'Q2', 'Q3', 'Q4']
+
+    min_y_value = float('inf')  # Initialize with a large value
+    max_y_value = float('-inf')  # Initialize with a small value
+
+    for year in range(2018, 2024):
+        for quarter in quarters:
+            mean_values = quarter_mean(year, quarter)
+            if mean_values is None:
+                continue
+            last_month = int(quarter[-1]) * 3
+            quarterly_mean_df.loc[pd.Timestamp(
+                f"{year}-{last_month}")] = list(mean_values.values())
+
+            # Update min and max y-values
+            for value in mean_values.values():
+                min_y_value = min(min_y_value, value)
+                max_y_value = max(max_y_value, value)
+
+    quarterly_mean_df.fillna(method='ffill', inplace=True)
+
+    plt.figure(figsize=(16, 8))
+    plt.plot(quarterly_mean_df)
+    plt.title('2018 - 2023 Average Graph')
+    plt.xlabel('Time')
+    plt.ylabel('Mean Value')
+    plt.legend([item_list])
+
+    # Set y-axis limits based on min and max values
+    plt.ylim(min_y_value, max_y_value)
+
+    file_name = f'{item_list}.png'
+    plt.savefig(file_name, dpi=300)
+    plt.close()
+
+    return {f'{file_name} saved...'}
