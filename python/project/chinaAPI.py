@@ -13,13 +13,44 @@ import matplotlib.pyplot as plt
 # ENCODERS_BY_TYPE: pydantic의 JSON 인코더가 MongoDB [ObjectId]를 문자열(str)로 인코딩할 수 있도록 설정
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
+plt.rcParams['font.family'] = 'AppleGothic'
+
 app = FastAPI()  # FastAPI 애플리케이션을 생성
 
-HOSTNAME = '192.168.1.25:27017'
+# MongoDB Atlas 접속시 비밀정보를 로드하고 가져오기 위한 함수 정의
+# 재 스크립트의 상위 디렉토리 경로를 BASE_DIR 변수에 할당
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
+# BASE_DIR과 상대 경로를 조합하여 비밀 정보가 저장된 파일의 경로를 secret_file 변수에 할당
+secret_file = os.path.join(BASE_DIR, '../secret.json')
 
-client = mongo_client.MongoClient(f'mongodb://{HOSTNAME}')
+with open(secret_file) as f:  # secret_file을 열고 파일 객체 f를 생성
+    # 파일의 내용을 읽어와 JSON 형식으로 디코딩하여 secrets 변수에 할당
+    secrets = json.loads(f.read())
 
-print('Connected to Mongodb....')
+
+def get_secret(setting, secrets=secrets):  # 비밀 정보를 가져오기 위한 함수
+    try:
+        # setting 매개변수로 설정 이름을 받음 -> secrets 딕셔너리에서 해당 설정 이름에 해당하는 값을 찾아 반환
+        return secrets[setting]
+    except KeyError:  # secrets에 존재하지 않는 경우
+        errorMsg = "Set the {} environment variable.".format(setting)
+        return errorMsg  # 환경 변수를 설정하라는 오류 메시지를 반환
+
+
+# 정의한 get_secret()함수 사용 => Mongodb 호스트이름, 사용자이름, 비밀번호를 가져와 MongoDB에 연결
+HOSTNAME = get_secret("ATLAS_Hostname")
+USERNAME = get_secret("ATLAS_Username")
+PASSWORD = get_secret("ATLAS_Password")
+
+client = mongo_client.MongoClient(
+    f'mongodb+srv://{USERNAME}:{PASSWORD}@{HOSTNAME}')
+print('Connected to Mongodb ATLAS....')  # 연결에 성공
+
+# HOSTNAME = '192.168.1.25:27017'
+
+# client = mongo_client.MongoClient(f'mongodb://{HOSTNAME}')
+
+# print('Connected to Mongodb....')
 
 mydb = client['project']
 mycol1 = mydb['AllParticleDatas']
@@ -28,7 +59,7 @@ mycol2 = mydb['chinaData']
 # 접속 확인
 
 
-@app.get('/')
+@app.get('/mongo')
 async def healthCheck():
     return "정상적으로 접속 했습니다."
 
@@ -87,15 +118,27 @@ def save_yearly_data(year, data):
 
 
 # quater data function
-def save_quarters_data(year, quarters_data):
+def save_quarters_data_to_df(year, quarters_data):
     os.makedirs(os.path.join(str(year), "quarters"), exist_ok=True)
     for quarter, data in quarters_data.items():
         with open(os.path.join(str(year), "quarters", f"{year}_{quarter}_data.json"), "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
+            if data:
+                # JSON 데이터를 DataFrame으로 변환
+                quarter_df = pd.DataFrame(data)
+
+                # 출력할 폴더 생성 (폴더가 없는 경우)
+                output_dir = f'output/{year}'
+                if not os.path.exists(output_dir):
+                    os.makedirs(output_dir)
+
+                # DataFrame을 CSV 파일로 저장
+                quarter_df.to_csv(
+                    f"{output_dir}/{year}_{quarter}.csv", index=False)
+
 
 # china data year&quater json save
-
 @app.get('/chinaYearAndQuarterDF')
 async def chinaYearAndQuarter():
 
@@ -145,7 +188,7 @@ async def chinaYearAndQuarter():
             quarters_data["Q4"] = json.loads(
                 quarter4_df.to_json(orient='records'))
 
-        save_quarters_data(year, quarters_data)
+        save_quarters_data_to_df(year, quarters_data)
 
     return "연도별 및 분기별 데이터가 성공적으로 저장되었습니다."
 
@@ -159,11 +202,11 @@ async def get_data(
     quarter: int = Path(..., description="분기를 입력하세요. ex) 1~4")
 ):
     if year < 2018 or year > 2023 or quarter < 1 or quarter > 4:
-        return {"error": "Invalid year or quarter"}
+        return {"error": "유효한 날짜를 입력하세요"}
 
     json_file = f"{year}/quarters/{year}_Q{quarter}_data.json"
     if not os.path.exists(json_file):
-        return {"error": "File not found"}
+        return {"error": "유효한 날짜를 입력하세요"}
 
     with open(json_file, 'r', encoding='utf-8') as f:
         data = json.loads(f.read())
@@ -194,7 +237,7 @@ async def droplocalData():
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
     for year in years:
-        if os.path.exists(str(year)):  # 올바른 함수로 수정했습니다.
+        if os.path.exists(str(year)):
             shutil.rmtree(str(year))
 
     for quarter in quarters:
@@ -215,7 +258,7 @@ async def droplocalData():
     return "local Data 삭제 완료"
 
 
-def quarter_mean(year, quarter):
+def quarter_mean(year, quarter, item_list):
     file_path = f"./{year}/quarters/{year}_{quarter}_data.json"
     try:
         with open(file_path, "r", encoding="utf-8") as file:
@@ -226,7 +269,6 @@ def quarter_mean(year, quarter):
     df = pd.DataFrame(quarter_data)
 
     mean_values = {}
-    item_list = ["방직 당월 (억 미터)"]
 
     for item in item_list:
         mean_values[item] = df[item].mean()
@@ -236,39 +278,29 @@ def quarter_mean(year, quarter):
 
 @app.get('/save_visual')
 async def save_visual(item_list: str):
+    items = item_list.split(',')
     time_range = pd.date_range(start='2018-01', end='2023-03', freq='QS')
-    quarterly_mean_df = pd.DataFrame(columns=[item_list], index=time_range)
+    quarterly_mean_df = pd.DataFrame(columns=items, index=time_range)
 
+    valid_years = range(2018, 2024)
     quarters = ['Q1', 'Q2', 'Q3', 'Q4']
 
-    min_y_value = float('inf')  # Initialize with a large value
-    max_y_value = float('-inf')  # Initialize with a small value
-
-    for year in range(2018, 2024):
+    for year in valid_years:
         for quarter in quarters:
-            mean_values = quarter_mean(year, quarter)
+            mean_values = quarter_mean(
+                year, quarter, items)  # items를 파라미터로 전달합니다
             if mean_values is None:
                 continue
             last_month = int(quarter[-1]) * 3
             quarterly_mean_df.loc[pd.Timestamp(
-                f"{year}-{last_month}")] = list(mean_values.values())
-
-            # Update min and max y-values
-            for value in mean_values.values():
-                min_y_value = min(min_y_value, value)
-                max_y_value = max(max_y_value, value)
-
-    quarterly_mean_df.fillna(method='ffill', inplace=True)
+                f"{year}-{last_month}")] = [mean_values[item] for item in items]
 
     plt.figure(figsize=(16, 8))
     plt.plot(quarterly_mean_df)
     plt.title('2018 - 2023 Average Graph')
     plt.xlabel('Time')
     plt.ylabel('Mean Value')
-    plt.legend([item_list])
-
-    # Set y-axis limits based on min and max values
-    plt.ylim(min_y_value, max_y_value)
+    plt.legend(items)
 
     file_name = f'{item_list}.png'
     plt.savefig(file_name, dpi=300)

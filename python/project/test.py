@@ -41,7 +41,7 @@ def get_secret(setting, secrets=secrets):  # 비밀 정보를 가져오기 위�
 HOSTNAME = get_secret("ATLAS_Hostname")
 USERNAME = get_secret("ATLAS_Username")
 PASSWORD = get_secret("ATLAS_Password")
-# 호스트 이름, 사용자 이름, 비밀번호를 사용하여 mongo_client.MongoClient를 초기화 -> 해당 클라이언트를 사용하여 MongoDB에 연결
+
 client = mongo_client.MongoClient(
     f'mongodb+srv://{USERNAME}:{PASSWORD}@{HOSTNAME}')
 print('Connected to Mongodb ATLAS....')  # 연결에 성공
@@ -59,7 +59,7 @@ mycol2 = mydb['chinaData']
 # 접속 확인
 
 
-@app.get('/')
+@app.get('/mongo')
 async def healthCheck():
     return "정상적으로 접속 했습니다."
 
@@ -118,14 +118,29 @@ def save_yearly_data(year, data):
 
 
 # quater data function
-def save_quarters_data(year, quarters_data):
-    os.makedirs(os.path.join(str(year), "quarters"), exist_ok=True)
+def save_quarters_data_to_df(year, quarters_data):
     for quarter, data in quarters_data.items():
-        with open(os.path.join(str(year), "quarters", f"{year}_{quarter}_data.json"), "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+        if data:
+            # JSON 데이터를 DataFrame으로 변환
+            quarter_df = pd.DataFrame(data)
+
+            # 출력할 폴더 생성 (폴더가 없는 경우)
+            output_dir = f'output/{year}'
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+
+            # DataFrame을 CSV 파일로 저장
+            quarter_df.to_csv(
+                f"{output_dir}/{year}_{quarter}.csv", index=False)
+# def save_quarters_data(year, quarters_data):
+#     os.makedirs(os.path.join(str(year), "quarters"), exist_ok=True)
+#     for quarter, data in quarters_data.items():
+#         with open(os.path.join(str(year), "quarters", f"{year}_{quarter}_data.json"), "w", encoding="utf-8") as f:
+#             json.dump(data, f, ensure_ascii=False, indent=4)
 
 
 # china data year&quater json save
+# FastAPI에서 '/chinaYearAndQuarterDF' 엔드포인트로 비동기 함수 정의
 @app.get('/chinaYearAndQuarterDF')
 async def chinaYearAndQuarter():
 
@@ -175,7 +190,7 @@ async def chinaYearAndQuarter():
             quarters_data["Q4"] = json.loads(
                 quarter4_df.to_json(orient='records'))
 
-        save_quarters_data(year, quarters_data)
+        save_quarters_data_to_df(year, quarters_data)
 
     return "연도별 및 분기별 데이터가 성공적으로 저장되었습니다."
 
@@ -224,7 +239,7 @@ async def droplocalData():
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
     for year in years:
-        if os.path.exists(str(year)):  # 올바른 함수로 수정했습니다.
+        if os.path.exists(str(year)):
             shutil.rmtree(str(year))
 
     for quarter in quarters:
@@ -245,7 +260,7 @@ async def droplocalData():
     return "local Data 삭제 완료"
 
 
-def quarter_mean(year, quarter):
+def quarter_mean(year, quarter, item_list):
     file_path = f"./{year}/quarters/{year}_{quarter}_data.json"
     try:
         with open(file_path, "r", encoding="utf-8") as file:
@@ -256,7 +271,6 @@ def quarter_mean(year, quarter):
     df = pd.DataFrame(quarter_data)
 
     mean_values = {}
-    item_list = ["방직 당월 (억 미터)"]
 
     for item in item_list:
         mean_values[item] = df[item].mean()
@@ -264,76 +278,31 @@ def quarter_mean(year, quarter):
     return mean_values
 
 
-# @app.get('/save_visual')
-# async def save_visual(item_list: str) -> dict:
-#     time_range = pd.date_range(start='2018-01', end='2023-03', freq='QS')
-
-#     quarters = ['Q1', 'Q2', 'Q3', 'Q4']
-
-#     mean_values = []
-#     time = []
-
-#     for year in range(2018, 2024):
-#         for quarter in quarters:
-#             quarter_mean_data = quarter_mean(year, quarter)
-#             if quarter_mean_data:
-#                 mean_values.append(list(quarter_mean_data.values()))
-#                 time.append(f"{year} {quarter}")
-
-#     mean_values = [value[0] for value in mean_values]
-
-#     fig, ax = plt.subplots()
-
-#     ax.plot_date(time_range, mean_values, linestyle='-', marker='o')
-
-#     ax.set_title(f'Quarterly {item_list} Trend')
-#     ax.set_xlabel('Time')
-#     ax.set_ylabel(f'{item_list}')
-#     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y Q%q'))
-
-#     plt.xticks(rotation=45)
-
-#     file_name = f'{item_list}.png'
-#     plt.savefig(file_name, dpi=300)
-#     plt.close()
-
-#     return {f'{file_name} saved...'}
-
 @app.get('/save_visual')
 async def save_visual(item_list: str):
+    items = item_list.split(',')
     time_range = pd.date_range(start='2018-01', end='2023-03', freq='QS')
-    quarterly_mean_df = pd.DataFrame(columns=[item_list], index=time_range)
+    quarterly_mean_df = pd.DataFrame(columns=items, index=time_range)
 
+    valid_years = range(2018, 2024)
     quarters = ['Q1', 'Q2', 'Q3', 'Q4']
 
-    min_y_value = float('inf')  # Initialize with a large value
-    max_y_value = float('-inf')  # Initialize with a small value
-
-    for year in range(2018, 2024):
+    for year in valid_years:
         for quarter in quarters:
-            mean_values = quarter_mean(year, quarter)
+            mean_values = quarter_mean(
+                year, quarter, items)  # items를 파라미터로 전달합니다
             if mean_values is None:
                 continue
             last_month = int(quarter[-1]) * 3
             quarterly_mean_df.loc[pd.Timestamp(
-                f"{year}-{last_month}")] = list(mean_values.values())
-
-            # Update min and max y-values
-            for value in mean_values.values():
-                min_y_value = min(min_y_value, value)
-                max_y_value = max(max_y_value, value)
-
-    quarterly_mean_df.fillna(method='ffill', inplace=True)
+                f"{year}-{last_month}")] = [mean_values[item] for item in items]
 
     plt.figure(figsize=(16, 8))
     plt.plot(quarterly_mean_df)
     plt.title('2018 - 2023 Average Graph')
     plt.xlabel('Time')
     plt.ylabel('Mean Value')
-    plt.legend([item_list])
-
-    # Set y-axis limits based on min and max values
-    plt.ylim(min_y_value, max_y_value)
+    plt.legend(items)
 
     file_name = f'{item_list}.png'
     plt.savefig(file_name, dpi=300)
