@@ -1,0 +1,19 @@
+{
+    "name" : "node_signal_test_app",
+    "version" : "1.0.0",
+    "description" : "node_signal_test_app",
+    "main" : "sig_test_js",
+    "private" : "true",
+    "scrips" : {
+        "test" : "echo \"Error : no test spectified \" && exit 1",
+        "start" : "node index"
+    },
+    "reponsitory" : {
+    },
+    "author" : "Han",
+    "license" : "MIT",
+    "bugs" : {
+        "url" : "test.com"
+    },
+    "homepage" : "test.com"
+}
