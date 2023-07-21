@@ -49,3 +49,6 @@ html/mysql/package-lock.json
 
 ## cloud9
 **/.c9
+
+## test
+**/.test
