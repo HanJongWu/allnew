@@ -2,9 +2,6 @@
     "name" : "docker_app",
     "version" : "1.0.0",
     "description" : "nodejs on docker",
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
     "private" : "true",
     "script" : {
         "start" : "node server.js"
@@ -14,17 +11,3 @@
         "express" :"^4.16.1"
     }
 }
-=======
->>>>>>> f18a9679d25451c754f8ed8290474aa22e15adf2
-    "scrips" : {
-        "start" : "node server.js"
-    },
-    "author" : "Han",
-    "dependencies" : {
-    	"express":"^4.16.1"
-    }
-}
-<<<<<<< HEAD
-=======
->>>>>>> de95fd84f296b27228e7f62bd03f37e0da494ece
->>>>>>> f18a9679d25451c754f8ed8290474aa22e15adf2
