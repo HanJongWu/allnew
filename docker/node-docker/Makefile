@@ -12,17 +12,9 @@ logs:
 	docker logs nodejs
 ps:
 	docker ps -a
-<<<<<<< HEAD
 img:
-=======
-img:	
->>>>>>> de95fd84f296b27228e7f62bd03f37e0da494ece
 	docker images
 rm:
 	docker rm -f $$(docker ps -aq)
 rmi:
-<<<<<<< HEAD
 	docker rmi $$(docker images -q)
-=======
-	docker rmi $$(docker images -q)
->>>>>>> de95fd84f296b27228e7f62bd03f37e0da494ece

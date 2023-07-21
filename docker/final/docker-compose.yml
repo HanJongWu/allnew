@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Service Definition
 version : "3.3"
 services:
@@ -7,13 +6,3 @@ services:
     build: .
     ports:
      - "8000:8000"
-=======
- # Service Definition
- version : "3.3"
- services:
-   node:
-     restart: always
-     build: .
-     ports:
-      - "8000:8000"
->>>>>>> de95fd84f296b27228e7f62bd03f37e0da494ece
