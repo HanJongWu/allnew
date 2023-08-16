@@ -315,7 +315,6 @@ app.get('/findone', function (req, res, next) {
 })
 
 
-//회원가입
 app.post('/register', (req, res) => {
     const { id, pw, name, email, mobile } = req.body;
     if (id == "") {
@@ -366,7 +365,6 @@ app.post('/login', (req, res) => {
 
 })
 
-//반납
 app.post('/return', function (req, res, next) {
     var userid = req.body.userid;
     var bicid = req.body.bicid;

@@ -13,7 +13,7 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 const mongoose = require("mongoose")
-mongoose.connect("mongodb://192.168.1.3:27017/test")
+mongoose.connect("mongodb://43.201.231.90:27017/test")
 
 // const mysql = require('sync-mysql');
 const env = require('dotenv').config({ path: "../../.env"});
