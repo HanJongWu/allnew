@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>UserTBL</title>
+    </head>
+    <body>
+    <h3>사용자정보</h3>
+    <hr />
+        <form action = "/insert" target= "gargetURL" name = "UserTBL" method="post">
+            <p>User_ID : <input type="text" size = "15" name = "id" /> <br /></p>
+            <p></p>Name : <input type="text" size="15" name="name" /> <br /></p>
+            <p>Email : <input type="text" size = "15" name = "email" /> <br /></p>
+            <p></p>Mobile : <input type="text" size="15" name="mobile" /> <br /></p>
+            <input type ="button" value="get select" onclick='document.targetURL.location.href="/select"' />&nbsp;&nbsp;
+            <input type="button" value="get selectQuery" onclick='document.targetURL.location.href="/selectQuery?UserID=" + document.userForm.id.value' />&nbsp;&nbsp;
+            <input type ="submit" value = "post insert" onclik=  />&nbsp;&nbsp;
+            <button type = "submit" formaction="/update">post update</button>&nbsp;&nbsp;
+            <button type = "submit" formaction="/delete">post delete</button>&nbsp;&nbsp;
+        </form>
+        <hr />
+        <iframe name = "targetURL" width="70%" height="500" style="border:none";
+        src = "/hello"></iframe>&nbsp;&nbsp;
+
+    </body>
+</html>
