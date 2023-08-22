@@ -5,7 +5,7 @@ import os
 
 plt.rcParams['font.family'] = 'AppleGothic'
 
-# 2018년부터 2023년까지 각 년도별 폴더에서 json 파일을 불러오기
+# 2018년부터 2023년까지 각 년도별 폴더에서 json 파일을 불러
 for year in range(2018, 2024):
     # json 파일 이름 및 디렉토리 설정
     json_file = f'./{year}/{year}_year_data.json'
