@@ -47,11 +47,6 @@ client = mongo_client.MongoClient(
     f'mongodb+srv://{USERNAME}:{PASSWORD}@{HOSTNAME}')
 print('Connected to Mongodb ATLAS....')  # 연결에 성공
 
-# HOSTNAME = '192.168.1.25:27017'
-
-# client = mongo_client.MongoClient(f'mongodb://{HOSTNAME}')
-
-# print('Connected to Mongodb....')
 
 mydb = client['project']
 mycol1 = mydb['AllParticleDatas']
