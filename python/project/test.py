@@ -18,7 +18,6 @@ plt.rcParams['font.family'] = 'AppleGothic'
 
 app = FastAPI()  # FastAPI 애플리케이션을 생성
 
-# MongoDB Atlas 접속시 비밀정보를 로드하고 가져오기 위한 함수 정의
 # 재 스크립트의 상위 디렉토리 경로를 BASE_DIR 변수에 할당
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
 # BASE_DIR과 상대 경로를 조합하여 비밀 정보가 저장된 파일의 경로를 secret_file 변수에 할당
