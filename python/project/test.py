@@ -66,7 +66,6 @@ async def getjsonserver():
 
     response = requests.get(url)
 
-    if response.status_code == 200:
         data = response.json()
 
         return data
@@ -80,7 +79,7 @@ async def getjsonservermongodb():
     url = "http://localhost:5000/data"
 
     response = requests.get(url)
-    if response.status_code == 200:
+    if response.status_code === 200:
         data = response.json()
 
         if isinstance(data, dict):
