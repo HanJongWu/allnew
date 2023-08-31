@@ -11,7 +11,6 @@ from typing import Optional
 import matplotlib.pyplot as plt
 from typing import List
 
-# ENCODERS_BY_TYPE: pydantic의 JSON 인코더가 MongoDB [ObjectId]를 문자열(str)로 인코딩할 수 있도록 설정
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
 plt.rcParams['font.family'] = 'AppleGothic'
