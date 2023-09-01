@@ -15,7 +15,7 @@ pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
 plt.rcParams['font.family'] = 'AppleGothic'
 
-app = FastAPI()  # FastAPI 애플리케이션을 생성
+app = FastAPI() 
 
 # 재 스크립트의 상위 디렉토리 경로를 BASE_DIR 변수에 할당
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
