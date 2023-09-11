@@ -18,7 +18,6 @@ plt.rcParams['font.family'] = 'AppleGothic'
 app = FastAPI() 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
-# BASE_DIR과 상대 경로를 조합하여 비밀 정보가 저장된 파일의 경로를 secret_file 변수에 할당
 secret_file = os.path.join(BASE_DIR, '../secret.json')
 
 with open(secret_file) as f:  # secret_file을 열고 파일 객체 f를 생성
