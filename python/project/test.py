@@ -21,7 +21,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.relpath("./")))
 secret_file = os.path.join(BASE_DIR, '../secret.json')
 
 with open(secret_file) as f:  # secret_file을 열고 파일 객체 f를 생성
-    # 파일의 내용을 읽어와 JSON 형식으로 디코딩하여 secrets 변수에 할당
     secrets = json.loads(f.read())
 
 
