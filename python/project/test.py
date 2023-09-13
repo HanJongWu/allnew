@@ -26,7 +26,6 @@ with open(secret_file) as f:  # secret_file을 열고 파일 객체 f를 생성
 
 def get_secret(setting, secrets=secrets):  # 비밀 정보를 가져오기 위한 함수
     try:
-        # setting 매개변수로 설정 이름을 받음 -> secrets 딕셔너리에서 해당 설정 이름에 해당하는 값을 찾아 반환
         return secrets[setting]
     except KeyError:  # secrets에 존재하지 않는 경우
         errorMsg = "Set the {} environment variable.".format(setting)
