@@ -32,7 +32,6 @@ def get_secret(setting, secrets=secrets):  # 비밀 정보를 가져오기 위�
         return errorMsg  # 환경 변수를 설정하라는 오류 메시지를 반환
 
 
-# 정의한 get_secret()함수 사용 => Mongodb 호스트이름, 사용자이름, 비밀번호를 가져와 MongoDB에 연결
 HOSTNAME = get_secret("ATLAS_Hostname")
 USERNAME = get_secret("ATLAS_Username")
 PASSWORD = get_secret("ATLAS_Password")
