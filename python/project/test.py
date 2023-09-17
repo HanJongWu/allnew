@@ -45,7 +45,6 @@ mydb = client['project']
 mycol1 = mydb['AllParticleDatas']
 mycol2 = mydb['chinaData']
 
-# 접속 확인
 
 
 @app.get('/mongo')
