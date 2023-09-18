@@ -52,7 +52,6 @@ async def healthCheck():
     return "정상적으로 접속 했습니다."
 
 
-# jsonserver data request
 @app.get('/getjsonserver')
 async def getjsonserver():
     url = "http://localhost:5000/data"
