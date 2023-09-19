@@ -65,7 +65,6 @@ async def getjsonserver():
         return {"error": "데이터를 가져오는데 실패했습니다."}
 
 
-# jsonserver data request > mongodb
 @app.get('/getjsonservermongodb')
 async def getjsonservermongodb():
     url = "http://localhost:5000/data"
