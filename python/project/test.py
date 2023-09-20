@@ -113,7 +113,6 @@ def save_quarters_data_to_df(year, quarters_data):
                 # JSON 데이터를 DataFrame으로 변환
                 quarter_df = pd.DataFrame(data)
 
-                # 출력할 폴더 생성 (폴더가 없는 경우)
                 output_dir = f'output/{year}'
                 if not os.path.exists(output_dir):
                     os.makedirs(output_dir)

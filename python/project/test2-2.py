@@ -50,4 +50,3 @@ plt.legend(item_list)
 
 plt.savefig('quarterly_average_graph.png', dpi=300)
 print(item_list, "saved..")
-plt.show()
