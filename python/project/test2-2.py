@@ -24,9 +24,6 @@ def quarter_mean(year, quarter):
     return mean_values
 
 
-item_list = ["방직 당월 (억 미터)"]
-time_range = pd.date_range(start='2018-01', end='2023-12', freq='QS')
-quarterly_mean_df = pd.DataFrame(columns=item_list, index=time_range)
 
 quarters = ['Q1', 'Q2', 'Q3', 'Q4']
 

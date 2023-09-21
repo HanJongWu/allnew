@@ -65,23 +65,6 @@ async def getjsonserver():
         return {"error": "데이터를 가져오는데 실패했습니다."}
 
 
-@app.get('/getjsonservermongodb')
-async def getjsonservermongodb():
-    url = "http://localhost:5000/data"
-
-    response = requests.get(url)
-    if response.status_code === 200:
-        data = response.json()
-
-        if isinstance(data, dict):
-            data = [data]
-
-        mycol2.insert_many(data)
-        return {"status": "mongoDB insert.."}
-
-    else:
-        return {"error"}
-
 
 # mongodb select 20
 @app.get('/getmongoselect20')
