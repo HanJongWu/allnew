@@ -105,7 +105,6 @@ def save_quarters_data_to_df(year, quarters_data):
                     f"{output_dir}/{year}_{quarter}.csv", index=False)
 
 
-# china data year&quater json save
 @app.get('/chinaYearAndQuarterDF')
 async def chinaYearAndQuarter():
 
