@@ -6,7 +6,6 @@ import os
 plt.rcParams['font.family'] = 'AppleGothic'
 
 for year in range(2018, 2024):
-    # json 파일 이름 및 디렉토리 설정
     json_file = f'./{year}/{year}_year_data.json'
 
     # json 파일이 있는 경우 읽어오기
