@@ -144,7 +144,6 @@ async def chinaYearAndQuarter():
         # 해당 년도의 데이터를 JSON 형식으로 변환
         year_data = json.loads(year_df.to_json(orient='records'))
 
-        # 년도별 데이터를 저장하는 함수 호출
         save_yearly_data(year, year_data)
 
         # 분기별 데이터 처리 및 저장
