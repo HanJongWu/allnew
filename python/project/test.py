@@ -112,7 +112,6 @@ async def chinaYearAndQuarter():
     data = mycol2.find(
         {"구분": {"$regex": "2018년|2019년|2020년|2021년|2022년|2023년"}})
 
-    # 데이터 필터링 작업을 수행할 빈 리스트 생성
     filtered_data = []
 
     # 데이터를 순회하면서 필터링 작업 수행

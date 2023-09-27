@@ -45,4 +45,3 @@ plt.xlabel('Time')
 plt.ylabel('Mean Value')
 plt.legend(item_list)
 
-plt.savefig('quarterly_average_graph.png', dpi=300)
