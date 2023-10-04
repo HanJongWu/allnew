@@ -34,7 +34,6 @@ for year in range(2018, 2024):
             # 그래프 저장할 폴더와 파일명 설정
             filename = f'./{year}/{year}_{item}_그래프.png'
 
-            # 파일에 그래프 저장
             plt.savefig(filename, dpi=300, bbox_inches='tight')
             print(f'{filename} file saved~!!')
             plt.show()

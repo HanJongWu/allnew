@@ -41,7 +41,3 @@ quarterly_mean_df.fillna(method='ffill', inplace=True)
 plt.figure(figsize=(16, 8))
 plt.plot(quarterly_mean_df)
 plt.title('2018 - 2023 24 Quarters Average Graph')
-plt.xlabel('Time')
-plt.ylabel('Mean Value')
-plt.legend(item_list)
-

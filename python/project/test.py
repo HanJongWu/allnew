@@ -78,7 +78,6 @@ async def getAllMongo():
     return list(mycol2.find())
 
 
-# year data function
 def save_yearly_data(year, data):
     os.makedirs(str(year), exist_ok=True)
     with open(os.path.join(str(year), f"{year}_year_data.json"), "w", encoding="utf-8") as f:
