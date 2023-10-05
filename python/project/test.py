@@ -66,7 +66,6 @@ async def getjsonserver():
 
 
 
-# mongodb select 20
 @app.get('/getmongoselect20')
 async def getMongoSelect():
     return list(mycol2.find().limit(20))

@@ -8,7 +8,6 @@ plt.rcParams['font.family'] = 'AppleGothic'
 for year in range(2018, 2024):
     json_file = f'./{year}/{year}_year_data.json'
 
-    # json 파일이 있는 경우 읽어오기
     if os.path.isfile(json_file):
         with open(json_file, 'r', encoding='utf-8') as file:
             year_data = json.load(file)
