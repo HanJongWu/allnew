@@ -21,7 +21,6 @@ for year in range(2018, 2024):
         item_list = ["방직 당월 (억 미터)", "화학섬유 당월 (만 톤)",
                      "공업용로봇 당월 (대)", "플라스틱원료 당월 (만 톤)"]
 
-        # 원하는 항목별 그래프 그리기
         for item in item_list:
             plt.figure(figsize=(12, 6))
             plt.plot(year_df['구분'], year_df[item], marker='o')

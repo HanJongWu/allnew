@@ -38,4 +38,3 @@ for year in range(2018, 2024):
 
 quarterly_mean_df.fillna(method='ffill', inplace=True)
 
-plt.figure(figsize=(16, 8))

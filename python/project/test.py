@@ -83,7 +83,6 @@ def save_yearly_data(year, data):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
-# quater data function
 def save_quarters_data_to_df(year, quarters_data):
     os.makedirs(os.path.join(str(year), "quarters"), exist_ok=True)
     for quarter, data in quarters_data.items():
