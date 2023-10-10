@@ -12,7 +12,6 @@ for year in range(2018, 2024):
         with open(json_file, 'r', encoding='utf-8') as file:
             year_data = json.load(file)
 
-        # json 데이터를 DataFrame으로 변환
         year_df = pd.DataFrame(year_data)
 
         # "구분" 열을 날짜 형식으로 변환

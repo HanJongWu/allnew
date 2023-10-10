@@ -71,7 +71,6 @@ async def getMongoSelect():
     return list(mycol2.find().limit(20))
 
 
-# mongdb data all
 @app.get('/mongodbALL')
 async def getAllMongo():
     return list(mycol2.find())

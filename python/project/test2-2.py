@@ -37,4 +37,3 @@ for year in range(2018, 2024):
             f"{year}-{last_month}")] = list(mean_values.values())
 
 quarterly_mean_df.fillna(method='ffill', inplace=True)
-
