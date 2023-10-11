@@ -28,7 +28,6 @@ for year in range(2018, 2024):
             plt.ylabel(f'{item}')
             plt.grid()
 
-            # 그래프 저장할 폴더와 파일명 설정
             filename = f'./{year}/{year}_{item}_그래프.png'
 
             plt.savefig(filename, dpi=300, bbox_inches='tight')

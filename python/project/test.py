@@ -110,7 +110,6 @@ async def chinaYearAndQuarter():
 
     filtered_data = []
 
-    # 데이터를 순회하면서 필터링 작업 수행
     for item in data:
         filtered_item = {}
         for key, value in item.items():
