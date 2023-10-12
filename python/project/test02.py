@@ -14,7 +14,6 @@ for year in range(2018, 2024):
 
         year_df = pd.DataFrame(year_data)
 
-        # "구분" 열을 날짜 형식으로 변환
         year_df['구분'] = pd.to_datetime(year_df['구분'], format="%Y년 %m월")
 
         item_list = ["방직 당월 (억 미터)", "화학섬유 당월 (만 톤)",

@@ -104,7 +104,6 @@ def save_quarters_data_to_df(year, quarters_data):
 @app.get('/chinaYearAndQuarterDF')
 async def chinaYearAndQuarter():
 
-    # 몽고DB에서 2018년부터 2023년까지 데이터를 조회
     data = mycol2.find(
         {"구분": {"$regex": "2018년|2019년|2020년|2021년|2022년|2023년"}})
 

@@ -34,5 +34,3 @@ for year in range(2018, 2024):
             continue
         last_month = int(quarter[-1]) * 3
         quarterly_mean_df.loc[pd.Timestamp(
-            f"{year}-{last_month}")] = list(mean_values.values())
-
